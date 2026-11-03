@@ -1,0 +1,37 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5434/shopdb
+    # dev defaults match docker-compose.yml; override with env vars anywhere real
+    username: ${DB_USERNAME:shop}
+    password: ${DB_PASSWORD:secret}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    open-in-view: false
+    properties:
+      hibernate:
+        # load lazy collections (images, specs) for a whole page in a few queries, not one per product
+        default_batch_fetch_size: 50
+  data:
+    web:
+      pageable:
+        max-page-size: 100
+  servlet:
+    multipart:
+      max-file-size: 5MB
+
+jwt:
+  # HS256 needs at least 32 bytes. The default is for local development only: set JWT_SECRET for real use.
+  secret: ${JWT_SECRET:dev-only-secret-change-me-before-any-real-use-0123456789}
+  access-token-expiration: 15m
+  refresh-token-expiration: 7d
+
+shop:
+  reviews:
+    # true: reviews are public immediately. Set false once a moderation screen exists (new reviews wait as PENDING).
+    auto-approve: true
+  payment:
+    # the simulated bank answers after a random pause in this range
+    delay-min-ms: 1000
+    delay-max-ms: 3000
